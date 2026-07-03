@@ -1,0 +1,14 @@
+# Runtime state — never commit a live brain's state
+.claude/attn_state.json
+.claude/.onboarded
+.claude/pool/
+**/__pycache__/
+*.pyc
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+.obsidian/workspace*
+
+# Backups made by /onboard when overwriting foundation files
+*.bak.md

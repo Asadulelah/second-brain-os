@@ -1,0 +1,13 @@
+{
+  "name": "second-brain-os",
+  "description": "A personal AI assistant with a real memory. Conversational onboarding (/onboard), dependency self-check (/brain-doctor), and a self-maintaining wiki of your life (/brain-dream + 9 maintenance skills). Every other second brain remembers — this one works.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Asadulelah",
+    "url": "https://github.com/Asadulelah"
+  },
+  "homepage": "https://github.com/Asadulelah/second-brain-os",
+  "repository": "https://github.com/Asadulelah/second-brain-os",
+  "license": "MIT",
+  "keywords": ["second-brain", "memory", "personal-assistant", "obsidian", "knowledge-management", "pkm"]
+}

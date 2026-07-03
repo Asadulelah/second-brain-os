@@ -1,0 +1,25 @@
+{
+  "name": "second-brain-os",
+  "owner": {
+    "name": "Asadulelah",
+    "url": "https://github.com/Asadulelah"
+  },
+  "metadata": {
+    "description": "Second Brain OS — a personal AI assistant with a real memory, by Asadulelah.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "second-brain-os",
+      "source": "./plugin",
+      "description": "A personal AI assistant with a real memory. Conversational onboarding, dependency self-check, and a self-maintaining wiki of your life.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Asadulelah",
+        "url": "https://github.com/Asadulelah"
+      },
+      "license": "MIT",
+      "keywords": ["second-brain", "memory", "personal-assistant", "obsidian", "knowledge-management"]
+    }
+  ]
+}
