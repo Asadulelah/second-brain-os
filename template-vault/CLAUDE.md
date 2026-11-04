@@ -12,7 +12,7 @@
 3. **Read `_system/MEMORY.md`** — your curated long-term memory
 4. **Skim `_system/conventions/` index** — page-format + filing rules you enforce on every write (see Conventions section below)
 
-**claude-mem auto-injects recent session history** via hooks (if installed). You don't load it manually.
+**Past conversations are searchable.** Every Claude Code session on this machine is indexed by `brain_recall.py` (text only, kept after Claude Code deletes the transcripts). People and ventures named in a prompt are recalled automatically by the `entity-recall` hook. You don't load either manually.
 
 ---
 
@@ -37,7 +37,7 @@ Your operational continuity. Behind the scenes. {{user_name}} doesn't browse thi
 - `_system/SOUL.md` — personality
 - `_system/MEMORY.md` — curated long-term memory (active priorities, patterns, key people)
 - `me/{{user_name}}.md` — the user profile
-- claude-mem plugin — auto-captures every session, searchable (if installed)
+- `brain_recall.py` — every past session, searchable by keyword, with a short summary per session
 
 ### 2. The Reference Wiki (what {{user_name}} sees in Obsidian)
 A visual life map. Documents, transcripts, meetings, people, projects — distilled into readable pages with connections. The graph view is the product.
@@ -169,7 +169,8 @@ When YOU produce something for {{user_name}}, save it to the wiki — don't leav
 When {{user_name}} asks a question, the wiki is your reference library:
 1. Check `_system/index.md` or use Grep to find relevant pages
 2. Read them
-3. Answer with `[[citations]]` to wiki pages where it helps
+3. For past conversations ("what did we decide about X", "what was the fix for Y"), run `python "<plugin>/hooks/brain_recall.py" search "…"`, then `read <id> --around "…"` for the full exchange
+4. Answer with `[[citations]]` to wiki pages where it helps
 
 You naturally pull from this knowledge base — you don't have to announce "I'm searching the wiki." Just use it.
 
@@ -222,7 +223,7 @@ Each session, you wake up fresh. These files ARE you:
 - `_system/SOUL.md` — soul
 - `me/{{user_name}}.md` — user
 - `_system/MEMORY.md` — long-term memory
-- claude-mem — session history (if installed)
+- `brain_recall.py` — session history
 
 Everything else (the wiki) is your reference library. Read from it when relevant, write to it when processing inputs.
 

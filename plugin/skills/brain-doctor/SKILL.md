@@ -1,6 +1,6 @@
 ---
 name: brain-doctor
-description: Dependency self-check for the Second Brain. Reports which optional enhancements are present vs missing — plugins (claude-mem, superpowers), MCP servers (Notion, Google Drive, etc.), and the attentional/memory hooks (context-router, pool-loader, pool-extractor, pool-auto-update) — and gives the exact install command for each missing one. Frames everything as graceful degradation: the core brain runs on just Claude Code + this plugin; the doctor tells you what unlocks more. Pairs with /onboard (onboarding builds who you are; brain-doctor checks the machine underneath). Trigger phrases — "brain doctor", "check my stack", "what's missing", "self-check", "dependency check", "what do I need to install", "diagnose my brain", "/brain-doctor".
+description: Dependency self-check for the Second Brain. Reports which optional enhancements are present vs missing — plugins (claude-mem, superpowers), MCP servers (Notion, Google Drive, etc.), and the memory hooks (brain_recall, entity-recall, pool-loader, pool-extractor, pool-auto-update) — and gives the exact install command for each missing one. Frames everything as graceful degradation: the core brain runs on just Claude Code + this plugin; the doctor tells you what unlocks more. Pairs with /onboard (onboarding builds who you are; brain-doctor checks the machine underneath). Trigger phrases — "brain doctor", "check my stack", "what's missing", "self-check", "dependency check", "what do I need to install", "diagnose my brain", "/brain-doctor".
 ---
 
 # /brain-doctor
@@ -27,7 +27,7 @@ Onboarding (`/onboard`) builds **who you are**. This skill checks the **machine 
 
 | Plugin | Unlocks | Install command |
 |---|---|---|
-| `claude-mem` | Semantic search across all past sessions, auto-injected at session start. Without it the brain still works — you just lose automatic session-history recall (the wiki + MEMORY still persist everything that gets filed). | `/plugin install claude-mem@thedotmack` |
+| `claude-mem` | Optional since v1.1: semantic (embedding) search on top of the built-in `brain_recall` keyword search. Nothing core is lost without it. | `/plugin install claude-mem@thedotmack` |
 | `superpowers` | Planning, debugging, code-review, and multi-session workflow skills. Enhances how the assistant tackles complex work; the brain's core filing/memory loop doesn't depend on it. | `/plugin install superpowers@claude-plugins-official` |
 
 (Source the exact marketplace handles from `manifest.json` → `dependencies.plugins.recommended`; report what that file declares rather than hard-coding, so the doctor stays in sync with the manifest.)
@@ -48,7 +48,8 @@ These wire into the user-level `settings.json` (see `plugin/settings.template.js
 
 | Hook | Event | Unlocks | If missing |
 |---|---|---|---|
-| `context-router` | `UserPromptSubmit` | Routes the relevant vault docs into context based on the prompt — the attentional layer. | Wire it per `settings.template.json`. Without it, context isn't auto-surfaced; you load pages manually. |
+| `brain_recall` | `SessionStart` | Indexes every past conversation so it can be searched (`brain_recall.py search "…"`). Check with `brain_recall.py stats`: `last_index` should be recent. | Wire it per `settings.template.json`. Without it, past chats are lost when Claude Code deletes old transcripts. |
+| `entity-recall` | `UserPromptSubmit` | Brings up the current state of people/ventures named in a prompt. Check with `entity-recall.py --test "<a name you have a page for>"`. | Wire it per `settings.template.json`. Without it, you open person pages manually. |
 | `pool-loader` | `SessionStart` | Loads the persisted session pool so a new session self-collects prior state. | Wire it per `settings.template.json`. Without it, sessions start cold. |
 | `pool-extractor` | `Stop` | Persists session state at the end of a turn/session for the next one to load. | Wire it per `settings.template.json`. |
 | `pool-auto-update` | `UserPromptSubmit` | Keeps the live pool fresh as the conversation moves. | Wire it per `settings.template.json`. |
@@ -70,7 +71,7 @@ These wire into the user-level `settings.json` (see `plugin/settings.template.js
 Core: ✅ healthy. The brain runs on Claude Code + this plugin alone — everything below is optional.
 
 Plugins
-  ✅ claude-mem        — auto session-history is ON
+  ✅ brain_recall      — 1,204 sessions indexed, last index 2 min ago
   ❌ superpowers       — MISSING
        Unlocks: planning, debugging, code-review, multi-session workflows
        Install: /plugin install superpowers@claude-plugins-official
@@ -82,7 +83,7 @@ MCP servers
        Add: enable the Google Drive connector in Claude settings
 
 Hooks (attentional + memory engine)
-  ✅ context-router    (UserPromptSubmit) — wired
+  ✅ entity-recall     (UserPromptSubmit) — wired
   ✅ pool-loader       (SessionStart)     — wired
   ❌ pool-extractor    (Stop)             — NOT wired
        Unlocks: persists session state for the next session to self-collect

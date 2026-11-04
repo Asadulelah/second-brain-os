@@ -1,17 +1,19 @@
 {
   "_comment": "Second Brain OS — settings template. Merge this 'hooks' block into your user-level ~/.claude/settings.json (or a project .claude/settings.json) to wire the attentional + memory engine. These hooks are an OPTIONAL ENHANCEMENT — the core brain runs without them. Replace {{PLUGIN_HOOKS_DIR}} with the absolute path to this plugin's hooks/ directory (e.g. ~/.claude/plugins/second-brain-os/plugin/hooks). On Windows use forward slashes or escaped backslashes. Run /brain-doctor anytime to check which of these are wired. Built on the Second Brain framework by Asadulelah.",
-
   "_attribution": "Built on the Second Brain framework by Asadulelah.",
-
   "env": {
-    "_comment_env": "context-router reads the vault root from here. Point it at your vault.",
+    "_comment_env": "entity-recall (and the legacy context-router) read the vault root from here. Point it at your vault.",
     "CONTEXT_DOCS_ROOT": "{{VAULT_ROOT}}"
   },
-
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
+          {
+            "type": "command",
+            "command": "python \"{{PLUGIN_HOOKS_DIR}}/brain_recall.py\" index",
+            "_unlocks": "Indexes every past Claude Code conversation into a local search DB (incremental, ~2 s). Rows outlive the transcripts Claude Code deletes."
+          },
           {
             "type": "command",
             "command": "python \"{{PLUGIN_HOOKS_DIR}}/pool-loader.py\"",
@@ -25,8 +27,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"{{PLUGIN_HOOKS_DIR}}/context-router-v2.py\"",
-            "_unlocks": "Routes the relevant vault docs into context based on the prompt — the attentional layer."
+            "command": "python \"{{PLUGIN_HOOKS_DIR}}/entity-recall.py\"",
+            "_unlocks": "When a prompt names a person or venture with a vault page (by name or alias), injects that page's current state. Needs no keyword map."
           },
           {
             "type": "command",

@@ -68,7 +68,7 @@ Run `/brain-doctor` first — it reads `manifest.json`, checks your actual stack
 
 | Plugin | Unlocks | Without it |
 |---|---|---|
-| **claude-mem** — `/plugin install claude-mem@thedotmack` | Semantic search across all past sessions, auto-injected at session start. | The wiki + MEMORY still persist everything that gets filed — you just lose automatic recall of past *conversations*. |
+| **claude-mem** — `/plugin install claude-mem@thedotmack` | Semantic (embedding) search on top of the built-in keyword recall. | Nothing core: since v1.1 `brain_recall.py` indexes and searches every past session on its own. |
 | **superpowers** — `/plugin install superpowers@claude-plugins-official` | Planning, debugging, code-review, multi-session workflow skills. | The brain's core filing/memory loop is unaffected. |
 
 > Use the exact marketplace handles in `manifest.json` → `dependencies.plugins.recommended` as the source of truth; `/brain-doctor` reports from there.

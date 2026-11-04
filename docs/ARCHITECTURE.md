@@ -29,7 +29,8 @@ Two consequences worth internalizing:
 
 | Kind | Lives in | Written by | Analogy |
 |---|---|---|---|
-| Session capture | claude-mem (optional plugin) | automatic | episodic memory |
+| Session recall | `~/.claude/brain-recall.db` | `brain_recall.py`, at session start (+ optional hourly digest) | episodic memory |
+| Entity recall | vault page names + `aliases:` | `entity-recall.py`, every prompt | recognition |
 | Realtime working memory | `project_memory.json` | `pool-auto-update.py`, every prompt | scratchpad |
 | Session pool | `~/.claude/pool/*.jsonl` | `pool-extractor.py` on Stop | short-term consolidation |
 | Curated long-term | `_system/MEMORY.md` | the assistant, deliberately | semantic memory |
@@ -37,7 +38,19 @@ Two consequences worth internalizing:
 
 The separation is a convention (`brain-vs-memory.md`): world-facts go on wiki pages, operational state goes in MEMORY, current-task state stays in session. Mixing layers is how brains rot — MEMORY bloats into an archive, or facts get trapped in session logs where retrieval can't reach them.
 
-## The attentional context router (the crown jewel)
+## Recall (v1.1): past sessions and named entities
+
+**`brain_recall.py`** keeps a SQLite FTS5 index of every Claude Code conversation on the machine, across every `~/.claude*` login. It stores text only (what you typed, what the assistant replied); tool calls, tool output, thinking, subagents and injected reminders are skipped. The rows outlive the transcripts, which Claude Code deletes after `cleanupPeriodDays`.
+
+- **Search** is BM25 with a mild recency weight (a year-old match counts half, so an old price doesn't beat the current one). No model, no vector DB, no embeddings: about 0.2 s over 5,000 sessions.
+- **Digest** (optional, `brain_recall.py digest`): Haiku writes, per finished session, a 2-4 sentence summary, the questions someone would type to find it, and its exact *atoms* (an error and the fix that worked, a command, a decision and its reason, a path, a price). Search matches these too, so "what was the fix for X" works without remembering the transcript's words. It runs through your Claude Code login (`claude -p`), never a per-token API key. Failures are never marked done, so the next run retries them.
+- **Schedule:** `index` runs from the `SessionStart` hook; run `digest` hourly (cron / Task Scheduler), e.g. `23 * * * * python3 /path/to/brain_recall.py digest --limit 20 --workers 2`.
+
+**`entity-recall.py`** (`UserPromptSubmit`) brings up the people and ventures a prompt names. Its keys are the vault's own page names and `aliases:` frontmatter, so there is no keyword map to keep in sync. It injects only the compiled-truth zone above a page's first `---` (preferring a "Where it stands" section), at most 3 pages and ~1,600 characters, never the same page twice in a session, marked as reference rather than instructions. Ambiguous keys (a first name shared by two people) are dropped unless one page is named exactly that.
+
+## The attentional context router (v1, now optional)
+
+Superseded in the default wiring by `entity-recall.py`: a hand-kept keyword map drifts away from the vault, and stale keys point at files that no longer exist. The router still works if you maintain `keywords.json`.
 
 `plugin/hooks/context-router-v2.py`, fired on `UserPromptSubmit`. Implements working-memory dynamics over the vault:
 

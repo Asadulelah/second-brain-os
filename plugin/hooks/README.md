@@ -7,7 +7,33 @@ them gets persistent context routing and cross-instance signalling for free.
 
 ---
 
-## The four hooks
+## Recall (v1.1, wired by default)
+
+### `brain_recall.py` — past-session memory
+**Hook:** `SessionStart` (runs `index`; incremental, ~2 s)
+
+A local SQLite FTS5 index of every Claude Code conversation on the machine, across every
+`~/.claude*` login. Text only; rows outlive the transcripts Claude Code deletes.
+
+```bash
+python3 brain_recall.py search "pricing decision" [-n 8] [--since 2026-10-01]
+python3 brain_recall.py read <session-id-prefix> --around "pricing"
+python3 brain_recall.py digest --limit 20 --workers 2   # optional: Haiku summary + atoms per session; run hourly
+python3 brain_recall.py stats
+python3 brain_recall.py selftest
+```
+
+Env: `BRAIN_RECALL_DB` (default `~/.claude/brain-recall.db`), `BRAIN_RECALL_MODEL` (default `haiku`).
+
+### `entity-recall.py` — people and ventures named in a prompt
+**Hook:** `UserPromptSubmit`
+
+Keys come from page names and `aliases:` in `people/*.md` and `ventures/*/*.md` (pages with
+`type: person|venture`). Injects the current-state zone of up to 3 matched pages, once per session.
+`python3 entity-recall.py --test "what did maya say"` dry-runs; `--selftest` checks it.
+Replaces `context-router-v2.py` in the default wiring (the keyword map drifted from the vault).
+
+## The v1 hooks
 
 ### `context-router-v2.py` — Attentional Context Router
 **Hook:** `UserPromptSubmit`

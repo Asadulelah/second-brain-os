@@ -1,6 +1,6 @@
 {
   "name": "second-brain-os",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A personal AI assistant with a real memory. Every other second brain remembers — this one works.",
   "author": "Asadulelah",
   "homepage": "https://github.com/Asadulelah/second-brain-os",
@@ -25,8 +25,8 @@
         {
           "name": "claude-mem",
           "install": "/plugin install claude-mem@thedotmack",
-          "unlocks": "Semantic search across all past sessions, auto-injected at session start.",
-          "without_it": "The wiki + MEMORY still persist everything filed — you lose automatic recall of past conversations only."
+          "unlocks": "Semantic (embedding) search on top of the built-in keyword recall. Optional since v1.1.",
+          "without_it": "Nothing core is lost: brain_recall.py (built in) indexes and searches every past session."
         },
         {
           "name": "superpowers",

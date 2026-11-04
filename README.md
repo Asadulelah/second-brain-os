@@ -39,7 +39,7 @@ Three design decisions carry the whole system:
 
 1. **The storage serves an agent, not the other way around.** Every page follows conventions (source citations, back-links, a synthesis zone + an append-only timeline) that exist so an *AI* can read, trust, and update them — which is exactly what makes them pleasant for a human to read too.
 
-2. **Attention, not just memory.** Storing everything is easy; surfacing the *right thing at the right moment* is the hard part. An attentional context router scores your files against every prompt — hot files get fully loaded, warm ones get headers, cold ones stay out of the way. Your assistant isn't drowning in its own notes.
+2. **Recall, not just storage.** Storing everything is easy; surfacing the *right thing at the right moment* is the hard part. Name a person and their page's current state is already in context. Ask "what did we decide about pricing" and every past conversation is searchable in a fraction of a second, each with a short summary and the exact fixes, commands and decisions it contained. Plain keyword search over local files: no vector database, no API key.
 
 3. **Graceful degradation.** The core runs on just Claude Code + this plugin. Session-history search, integrations, the hook engine — all optional enhancements. Run `/brain-doctor` any time and the assistant tells you exactly what's installed, what's missing, and the one command to add each piece. Nothing breaks because you skipped a step.
 
@@ -54,7 +54,7 @@ second-brain-os/
 │   │   ├── brain-dream/     /brain-dream — the self-maintenance cycle (nightly/weekly/full)
 │   │   └── brain-*/         9 more maintenance + research skills (lint, back-links,
 │   │                        dedup, tier-audit, source-fix, compile, graph, resolver, research)
-│   ├── hooks/               The attentional memory engine (4 Python hooks, optional)
+│   ├── hooks/               The memory engine: recall, entity recall, session pool (optional)
 │   └── settings.template.json
 ├── template-vault/          Your brain's starting structure — near-empty on purpose;
 │   │                        /onboard fills it in from your answers
